@@ -64,3 +64,17 @@ bccd_test_cocoformat.json
 cut -f -4 -d , sample/bccd_test_cocoformat.json                                                                                                                金  5/24 20:20:49 2019
 {"images": [{"file_name": "BloodImage_00007.jpg", "height": 480, "width": 640, "id": "BloodImage_00007"}
 ```
+
+
+## bugs
+
+- image id
+默认为的情况采用文件名截断的方式获取到id,但是在不规则的文件名下,不适用;故直接使用文件名作为image id量.
+```python
+    convert_xmls_to_cocojson(
+        annotation_paths=ann_paths,
+        label2id=label2id,
+        output_jsonpath=args.output,
+        extract_num_from_imgid=False # 注意根据情况设置成False or True
+    )
+```

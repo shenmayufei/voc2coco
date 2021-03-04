@@ -7,6 +7,11 @@ from tqdm import tqdm
 import re
 
 
+
+
+
+
+
 def get_label2id(labels_path: str) -> Dict[str, int]:
     """id is 1 start"""
     with open(labels_path, 'r') as f:
@@ -35,10 +40,16 @@ def get_annpaths(ann_dir_path: str = None,
 
 def get_image_info(annotation_root, extract_num_from_imgid=True):
     path = annotation_root.findtext('path')
-    if path is None:
-        filename = annotation_root.findtext('filename')
-    else:
-        filename = os.path.basename(path)
+
+    # original
+    # if path is None:
+    #     filename = annotation_root.findtext('filename')
+    # else:
+    #     filename = os.path.basename(path)
+
+    # zhidian
+    filename = annotation_root.findtext('filename')
+
     img_name = os.path.basename(filename)
     img_id = os.path.splitext(img_name)[0]
     if extract_num_from_imgid and isinstance(img_id, str):
@@ -120,16 +131,16 @@ def convert_xmls_to_cocojson(annotation_paths: List[str],
 def main():
     parser = argparse.ArgumentParser(
         description='This script support converting voc format xmls to coco format json')
-    parser.add_argument('--ann_dir', type=str, default=None,
+    parser.add_argument('--ann_dir', type=str, default='/media/yzh/data/comma/tobo_detect/tobo_2833_dataset/Annotations',
                         help='path to annotation files directory. It is not need when use --ann_paths_list')
-    parser.add_argument('--ann_ids', type=str, default=None,
+    parser.add_argument('--ann_ids', type=str, default='/media/yzh/data/comma/tobo_detect/tobo_2833_dataset/ImageSets/Main/val.txt',
                         help='path to annotation files ids list. It is not need when use --ann_paths_list')
     parser.add_argument('--ann_paths_list', type=str, default=None,
                         help='path of annotation paths list. It is not need when use --ann_dir and --ann_ids')
-    parser.add_argument('--labels', type=str, default=None,
+    parser.add_argument('--labels', type=str, default='/media/yzh/data/comma/tobo_detect/tobo_2833_dataset/label.txt',
                         help='path to label list.')
     parser.add_argument('--output', type=str, default='output.json', help='path to output json file')
-    parser.add_argument('--ext', type=str, default='', help='additional extension of annotation file')
+    parser.add_argument('--ext', type=str, default='xml', help='additional extension of annotation file')
     args = parser.parse_args()
     label2id = get_label2id(labels_path=args.labels)
     ann_paths = get_annpaths(
@@ -142,8 +153,14 @@ def main():
         annotation_paths=ann_paths,
         label2id=label2id,
         output_jsonpath=args.output,
-        extract_num_from_imgid=True
+        extract_num_from_imgid=False
     )
+
+# usage: python voc2coco.py
+#   --ann_dir sample/Annotations \
+#   --ann_ids sample/dataset_ids/train.txt \
+#   --labels sample/labels.txt \
+#   --output sample/outputs/train.json --ext xml
 
 
 if __name__ == '__main__':

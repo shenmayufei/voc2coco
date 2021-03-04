@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Usage: sh sample/make_bccd_cocojson.sh
+# debug args: --ann_dir sample/Annotations --ann_ids sample/dataset_ids/test.txt --labels sample/labels.txt --output sample/outputs/test.json --ext xml
 
 for split in train val trainval test
 do
